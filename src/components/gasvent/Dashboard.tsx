@@ -533,8 +533,6 @@ function App({ displayName }: { displayName: string }) {
             <span>{typeof t[page as keyof typeof t] === 'string' ? (t[page as keyof typeof t] as string) : page}</span>
           </div>
           <div className="topbar-right">
-            <span className="demo-badge">{t.simulation}</span>
-            <span className="top-divider" />
             <div className="notification-wrap">
               <button
                 className={`icon-button ${notifications ? 'selected' : ''}`}
@@ -905,10 +903,6 @@ function App({ displayName }: { displayName: string }) {
             </div>
           )}
           <footer className="page-footer">
-            <span>
-              <Icon name="shield" size={14} />
-              {t.noHardware}
-            </span>
             <span>Gvent</span>
           </footer>
         </main>

@@ -2718,8 +2718,8 @@ input[type='range']::-moz-range-thumb {
 
 .fan-disc {
   position: relative;
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -2727,18 +2727,19 @@ input[type='range']::-moz-range-thumb {
   flex-shrink: 0;
   background: radial-gradient(circle, #25382b 0%, #17221a 100%);
   border: 1px solid #364a3b;
-  box-shadow: 0 0 12px rgba(162, 229, 186, 0.12);
+  box-shadow: 0 0 8px rgba(162, 229, 186, 0.08);
   cursor: pointer;
-  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
   overflow: hidden;
   padding: 0;
   margin: 0;
 }
 
-.fan-disc:hover {
-  transform: scale(1.05);
+.fan-disc:hover,
+.fan-disc:active {
+  transform: scale(1.02);
   border-color: #a2e5ba;
-  box-shadow: 0 0 16px rgba(162, 229, 186, 0.25);
+  box-shadow: 0 0 8px rgba(162, 229, 186, 0.2);
 }
 
 .fan-disc .fan-orbit {
@@ -2758,13 +2759,18 @@ input[type='range']::-moz-range-thumb {
   -webkit-appearance: none;
 }
 
+.fan-disc .fan-orbit:focus-visible {
+  outline: 1.5px solid #a2e5ba;
+  outline-offset: 1px;
+}
+
 .fan-disc .fan-orbit:after {
   display: none;
 }
 
 .fan-disc .fan {
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   display: block;
   margin: 0;
   padding: 0;
