@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Gvent</string>
+    <string name="update_webview">Please update Android System WebView and Google Chrome from the Play Store and reopen Gvent.</string>
+    <string name="invalid_site_url">Use a valid HTTPS address for your published site.</string>
+    <string name="connect_site">Connect site</string>
+    <string name="enter_site_hint">Enter the HTTPS address of your published site.</string>
+    <string name="url_hint">https://your-published-site</string>
+    <string name="open_gvent">Open Gvent</string>
+    <string name="no_connection">No connection to your space</string>
+    <string name="check_connection">Check your connection and site address.</string>
+    <string name="retry">Retry</string>
+    <string name="change_site_address">Change site address</string>
+    <string name="language_label">Language</string>
+    <string name="spanish">Spanish</string>
+    <string name="english">English</string>
+</resources>

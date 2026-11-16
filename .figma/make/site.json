@@ -1,0 +1,6 @@
+{
+  "title": "Gvent App",
+  "language": "es",
+  "robots": { "index": true },
+  "accessibility": { "addBypassLinks": true }
+}
