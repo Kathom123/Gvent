@@ -606,14 +606,6 @@ function App({ displayName }: { displayName: string }) {
                 </button>
               ))}
             </div>
-            <button
-              type="button"
-              className={`toolbar-fan-btn ${running ? 'running' : 'stopped'}`}
-              onClick={toggleFan}
-            >
-              <FanIndicator running={running} speed={speed} small={true} />
-              <span>{running ? (lang === 'es' ? 'Detener ventilador' : 'Stop fan') : (lang === 'es' ? 'Iniciar ventilador' : 'Start fan')}</span>
-            </button>
           </div>
           {page === 'Overview' && (
             <div className="dashboard-grid">
@@ -663,10 +655,13 @@ function App({ displayName }: { displayName: string }) {
                       type="button"
                       className={`fan-power-btn ${running ? 'running' : 'stopped'}`}
                       onClick={toggleFan}
+                      aria-label={running ? (lang === 'es' ? 'Apagar ventilador' : 'Turn off fan') : (lang === 'es' ? 'Encender ventilador' : 'Turn on fan')}
                       title={running ? (lang === 'es' ? 'Apagar ventilador' : 'Turn off fan') : (lang === 'es' ? 'Encender ventilador' : 'Turn on fan')}
                     >
                       <Icon name="power" size={15} />
-                      <span>{running ? (lang === 'es' ? 'Apagar' : 'Off') : (lang === 'es' ? 'Encender' : 'On')}</span>
+                      <span className="power-btn-text">
+                        {running ? (lang === 'es' ? 'Apagar' : 'Off') : (lang === 'es' ? 'Encender' : 'On')}
+                      </span>
                     </button>
                   </div>
                   <div className="speed-buttons">
