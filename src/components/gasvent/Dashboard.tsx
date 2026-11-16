@@ -607,11 +607,12 @@ function App({ displayName }: { displayName: string }) {
               ))}
             </div>
             <button
-              className={`button primary ${running ? 'stop' : ''}`}
+              type="button"
+              className={`toolbar-fan-btn ${running ? 'running' : 'stopped'}`}
               onClick={toggleFan}
             >
-              <FanIndicator running={running} speed={speed} />
-              {running ? (lang === 'es' ? 'Detener ventilador' : 'Stop fan') : (lang === 'es' ? 'Iniciar ventilador' : 'Start fan')}
+              <FanIndicator running={running} speed={speed} small={true} />
+              <span>{running ? (lang === 'es' ? 'Detener ventilador' : 'Stop fan') : (lang === 'es' ? 'Iniciar ventilador' : 'Start fan')}</span>
             </button>
           </div>
           {page === 'Overview' && (
@@ -642,21 +643,38 @@ function App({ displayName }: { displayName: string }) {
                 </div>
                 <div className="fan-control-box">
                   <div className="fan-info">
-                    <span className="fan-disc">
-                      <FanIndicator running={running} speed={speed} />
-                    </span>
-                    <div>
-                      <strong>{running ? `${speed}% ${lang === 'es' ? 'velocidad' : 'speed'}` : (lang === 'es' ? 'Ventilador detenido' : 'Fan stopped')}</strong>
-                      <p>
-                        {mode === 'Auto' ? (lang === 'es' ? 'Modo automático activo' : 'Automatic mode active') : (lang === 'es' ? 'Control manual' : 'Manual control')}
-                      </p>
+                    <div className="fan-left">
+                      <span
+                        className="fan-disc"
+                        title={lang === 'es' ? 'Presiona el icono para pausar/activar la animación' : 'Click icon to toggle animation'}
+                      >
+                        <FanIndicator running={running} speed={speed} />
+                      </span>
+                      <div>
+                        <strong>
+                          {running ? `${speed}% ${lang === 'es' ? 'velocidad' : 'speed'}` : (lang === 'es' ? 'Ventilador detenido' : 'Fan stopped')}
+                        </strong>
+                        <p>
+                          {mode === 'Auto' ? (lang === 'es' ? 'Modo automático activo' : 'Automatic mode active') : (lang === 'es' ? 'Control manual' : 'Manual control')}
+                        </p>
+                      </div>
                     </div>
+                    <button
+                      type="button"
+                      className={`fan-power-btn ${running ? 'running' : 'stopped'}`}
+                      onClick={toggleFan}
+                      title={running ? (lang === 'es' ? 'Apagar ventilador' : 'Turn off fan') : (lang === 'es' ? 'Encender ventilador' : 'Turn on fan')}
+                    >
+                      <Icon name="power" size={15} />
+                      <span>{running ? (lang === 'es' ? 'Apagar' : 'Off') : (lang === 'es' ? 'Encender' : 'On')}</span>
+                    </button>
                   </div>
                   <div className="speed-buttons">
                     {[25, 50, 75, 100].map((s) => (
                       <button
+                        type="button"
                         key={s}
-                        className={running && speed === s ? 'selected' : ''}
+                        className={`speed-btn ${running && speed === s ? 'selected' : ''}`}
                         onClick={() => changeSpeed(s)}
                       >
                         {s}%

@@ -183,7 +183,7 @@ export function Fan({
     let frame: number | null = null
     let previous: number | null = null
     let suspended = false
-    const degreesPerSecond = 30 + Math.min(100, Math.max(0, speed)) * 1.2
+    const degreesPerSecond = 40 + (Math.min(100, Math.max(0, speed)) / 100) * 360
     const tick = (time: number) => {
       const elapsed = previous === null ? 0 : Math.min(time - previous, 100)
       previous = time
@@ -247,20 +247,31 @@ export function Fan({
   )
 }
 
-export function FanIndicator({ running, speed }: { running: boolean; speed: number }) {
+export function FanIndicator({
+  running,
+  speed,
+  small = false,
+}: {
+  running: boolean
+  speed: number
+  small?: boolean
+}) {
   const reducedMotion = useReducedMotion()
   const [override, setOverride] = useState<boolean | null>(null)
   const enabled = override ?? !reducedMotion
   return (
     <button
       type="button"
-      className={`fan-orbit ${running ? 'running' : ''}`}
+      className={`fan-orbit ${running ? 'running' : ''} ${small ? 'small' : ''} ${!enabled ? 'paused' : ''}`}
       aria-label="Animación del ventilador"
       aria-pressed={enabled}
-      title={enabled ? 'Pausar animación' : 'Activar animación'}
-      onClick={() => setOverride(!enabled)}
+      title={enabled ? 'Pausar animación del ventilador' : 'Activar animación del ventilador'}
+      onClick={(e) => {
+        e.stopPropagation()
+        setOverride(!enabled)
+      }}
     >
-      <Fan running={running} speed={speed} motionEnabled={enabled} />
+      <Fan running={running} small={small} speed={speed} motionEnabled={enabled} />
     </button>
   )
 }

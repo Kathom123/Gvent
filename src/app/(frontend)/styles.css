@@ -2589,3 +2589,357 @@ input[type='range']::-moz-range-thumb {
 .figma-bypass-link:focus {
   transform: translateY(0);
 }
+
+/* ==========================================================================
+   Dashboard Overview & Fan Control Redesign (Compact & Coherent)
+   ========================================================================== */
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-top: 20px;
+}
+
+@media (max-width: 960px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sensor-panel {
+  padding: 22px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sensor-panel .section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.sensor-panel .section-heading h2 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #e1ede4;
+  margin-top: 4px;
+}
+
+.ppm-value {
+  font-size: 13px;
+  color: #8fa093;
+}
+
+.ppm-value strong {
+  font-family: 'Manrope', sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: #e8ece9;
+  margin-right: 2px;
+}
+
+.sensor-bar {
+  width: 100%;
+  height: 8px;
+  background: #202822;
+  border-radius: 999px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.sensor-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #a2e5ba 0%, #e2b05c 60%, #ef5353 100%);
+  transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sensor-labels {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 500;
+  color: #798b7e;
+}
+
+.sensor-labels span:nth-child(2) {
+  color: #d9a752;
+}
+
+.sensor-labels span:nth-child(3) {
+  color: #e55353;
+}
+
+/* Fan Control Box */
+.fan-control-box {
+  background: rgba(22, 28, 24, 0.75);
+  border: 1px solid #2a362d;
+  border-radius: 12px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.fan-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.fan-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.fan-disc {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  background: radial-gradient(circle, #25382b 0%, #17221a 100%);
+  border: 1px solid #364a3b;
+  box-shadow: 0 0 12px rgba(162, 229, 186, 0.12);
+  cursor: pointer;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.fan-disc:hover {
+  transform: scale(1.05);
+  border-color: #a2e5ba;
+  box-shadow: 0 0 16px rgba(162, 229, 186, 0.25);
+}
+
+.fan-disc .fan-orbit {
+  width: 44px;
+  height: 44px;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+}
+
+.fan-disc .fan-orbit:after {
+  display: none;
+}
+
+.fan-left strong {
+  font-family: 'Manrope', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: #e2ece5;
+  display: block;
+}
+
+.fan-left p {
+  font-size: 11px;
+  color: #7b8e80;
+  margin-top: 2px;
+}
+
+/* Reddish Integrated Power Toggle Button */
+.fan-power-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 14px;
+  border-radius: 9px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.fan-power-btn.running {
+  background: rgba(239, 68, 68, 0.18);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #fca5a5;
+}
+
+.fan-power-btn.running:hover {
+  background: rgba(239, 68, 68, 0.32);
+  border-color: #ef4444;
+  color: #ffffff;
+  box-shadow: 0 0 14px rgba(239, 68, 68, 0.35);
+}
+
+.fan-power-btn.stopped {
+  background: rgba(220, 38, 38, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  color: #f87171;
+}
+
+.fan-power-btn.stopped:hover {
+  background: rgba(239, 68, 68, 0.22);
+  border-color: rgba(239, 68, 68, 0.5);
+  color: #fca5a5;
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.25);
+}
+
+/* Mini Semi-Transparent Percentage Buttons */
+.speed-buttons {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.speed-btn {
+  flex: 1;
+  padding: 7px 0;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  color: #9cb0a1;
+  backdrop-filter: blur(4px);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.speed-btn:hover {
+  background: rgba(162, 229, 186, 0.12);
+  border-color: rgba(162, 229, 186, 0.3);
+  color: #d2f5dd;
+}
+
+.speed-btn.selected {
+  background: rgba(162, 229, 186, 0.22);
+  border-color: #a2e5ba;
+  color: #a2e5ba;
+  font-weight: 600;
+  box-shadow: 0 0 12px rgba(162, 229, 186, 0.2);
+}
+
+/* Quick Stats Bar at bottom of Overview */
+.quick-stats {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  padding: 18px 20px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+}
+
+@media (max-width: 768px) {
+  .quick-stats {
+    grid-template-columns: 1fr;
+  }
+}
+
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  background: #141a16;
+  border: 1px solid #253027;
+  border-radius: 10px;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.stat-card:hover {
+  border-color: #344538;
+  background: #17201a;
+}
+
+.stat-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  background: rgba(162, 229, 186, 0.12);
+  border: 1px solid rgba(162, 229, 186, 0.25);
+  color: #a2e5ba;
+}
+
+.stat-icon.blue {
+  background: rgba(147, 197, 253, 0.12);
+  border-color: rgba(147, 197, 253, 0.25);
+  color: #93c5fd;
+}
+
+.stat-icon.mint {
+  background: rgba(162, 229, 186, 0.12);
+  border-color: rgba(162, 229, 186, 0.25);
+  color: #a2e5ba;
+}
+
+.stat-card > div {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.stat-card small {
+  font-size: 11px;
+  color: #798b7e;
+  font-weight: 500;
+  letter-spacing: 0.1px;
+}
+
+.stat-card strong {
+  font-family: 'Manrope', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #e2ece5;
+}
+
+/* Toolbar Fan Start/Stop Button */
+.toolbar-fan-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 9px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.toolbar-fan-btn.running {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  color: #fca5a5;
+}
+
+.toolbar-fan-btn.running:hover {
+  background: rgba(239, 68, 68, 0.25);
+  border-color: #ef4444;
+  color: #ffffff;
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.3);
+}
+
+.toolbar-fan-btn.stopped {
+  background: rgba(162, 229, 186, 0.15);
+  border: 1px solid rgba(162, 229, 186, 0.35);
+  color: #a2e5ba;
+}
+
+.toolbar-fan-btn.stopped:hover {
+  background: rgba(162, 229, 186, 0.25);
+  border-color: #a2e5ba;
+  color: #ffffff;
+  box-shadow: 0 0 12px rgba(162, 229, 186, 0.3);
+}
