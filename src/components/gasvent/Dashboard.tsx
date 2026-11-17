@@ -221,6 +221,15 @@ function App({ displayName }: { displayName: string }) {
   function notify(message: string) {
     setToast(message)
   }
+
+  // 🔧 Helper central: traduce las habitaciones (clave estable → etiqueta visible)
+  function getRoomLabel(r: string) {
+    if (r === 'Kitchen') return lang === 'es' ? 'Cocina' : 'Kitchen'
+    if (r === 'Living room') return lang === 'es' ? 'Sala' : 'Living room'
+    if (r === 'Garage') return lang === 'es' ? 'Garaje' : 'Garage'
+    return r
+  }
+
   async function signOut() {
     if (signingOut) return
     setSigningOut(true)
@@ -356,7 +365,8 @@ function App({ displayName }: { displayName: string }) {
     if (!running && !speed) setSpeed(45)
     addEvent(
       running ? (lang === 'es' ? 'Ventilación detenida manualmente' : 'Ventilation stopped manually') : (lang === 'es' ? 'Ventilación iniciada manualmente' : 'Ventilation started manually'),
-      `${room} · ${lang === 'es' ? 'Control manual' : 'Manual control'}`,
+      // 🔧 Usamos getRoomLabel para que el detalle quede limpio en el idioma activo
+      `${getRoomLabel(room)} · ${lang === 'es' ? 'Control manual' : 'Manual control'}`,
     )
   }
   function exportData() {
@@ -381,6 +391,154 @@ function App({ displayName }: { displayName: string }) {
     URL.revokeObjectURL(url)
     notify(lang === 'es' ? 'Informe de actividad exportado.' : 'Activity report exported.')
   }
+
+  function getDeviceName(name: string) {
+    if (lang === 'en') return name
+    const map: Record<string, string> = {
+      'Gas sensor': 'Sensor de gas',
+      'Ventilation fan': 'Ventilador de ventilación',
+      'Climate sensor': 'Sensor de clima',
+    }
+    return map[name] || name
+  }
+
+  function getDeviceStatus(status: string) {
+    if (lang === 'en') return status
+    const map: Record<string, string> = {
+      Online: 'En línea',
+      Offline: 'Desconectado',
+      Running: 'En ejecución',
+      Standby: 'En espera',
+    }
+    return map[status] || status
+  }
+
+  // 🔧 Título del modal centralizado y traducido
+  function getModalTitle(m: string) {
+    if (m === 'Add device') return t.addDevice
+    if (m === 'Help & support') return t.helpSupport
+    if (m === 'Your home') return t.myHome
+    if (m === 'Demo workspace') return t.personalWorkspace
+    return getDeviceName(m)
+  }
+
+  // 🔧 Traducción de marcas de tiempo relativas (bidireccional + patrones dinámicos)
+  function getEventTime(time: string) {
+    if (!time) return time
+    if (lang === 'es') {
+      // English → Spanish
+      if (/^just now$/i.test(time)) return 'Ahora mismo'
+      const m = time.match(/^(\d+)\s*(min|hr|hour|hours?)\s*ago$/i)
+      if (m) {
+        const n = m[1]
+        const unit = m[2].toLowerCase()
+        if (unit === 'min') return `Hace ${n} min`
+        return `Hace ${n} h`
+      }
+      // Fixed mappings
+      const fixedEnToEs: Record<string, string> = {
+        'A moment ago': 'Hace un momento',
+        '1 minute ago': 'Hace 1 min',
+        '1 hour ago': 'Hace 1 h',
+        'Yesterday': 'Ayer',
+      }
+      return fixedEnToEs[time] || time
+    } else {
+      // Spanish → English
+      if (/^ahora mismo$/i.test(time)) return 'Just now'
+      if (/^hace un momento$/i.test(time)) return 'A moment ago'
+      if (/^ayer$/i.test(time)) return 'Yesterday'
+      const m = time.match(/^hace\s*(\d+)\s*(min|h|hora|horas?)$/i)
+      if (m) {
+        const n = m[1]
+        const unit = m[2].toLowerCase()
+        if (unit === 'min') return `${n} min ago`
+        return `${n} hr ago`
+      }
+      const fixedEsToEn: Record<string, string> = {
+        'Hace 1 min': '1 min ago',
+        'Hace 1 h': '1 hr ago',
+        'Hace un momento': 'A moment ago',
+      }
+      return fixedEsToEn[time] || time
+    }
+  }
+
+  function getEventTitle(title: string) {
+    if (lang === 'es') {
+      const map: Record<string, string> = {
+        'Air quality is back to normal': 'Calidad del aire volvió a la normalidad',
+        'Ventilation adjusted automatically': 'Ventilación ajustada automáticamente',
+        'Elevated gas level detected': 'Nivel elevado de gas detectado',
+        'Ventilation stopped manually': 'Ventilación detenida manualmente',
+        'Ventilation started manually': 'Ventilación iniciada manualmente',
+        'Simulated gas alert detected': 'Alerta de gas simulada detectada',
+        'Demo device added': 'Dispositivo de demo agregado',
+        'Demo sensor calibrated': 'Sensor de demo calibrado',
+      }
+      return map[title] || title
+    } else {
+      const map: Record<string, string> = {
+        'Calidad del aire volvió a la normalidad': 'Air quality is back to normal',
+        'Ventilación ajustada automáticamente': 'Ventilation adjusted automatically',
+        'Nivel elevado de gas detectado': 'Elevated gas level detected',
+        'Ventilación detenida manualmente': 'Ventilation stopped manually',
+        'Ventilación iniciada manualmente': 'Ventilation started manually',
+        'Alerta de gas simulada detectada': 'Simulated gas alert detected',
+        'Dispositivo de demo agregado': 'Demo device added',
+        'Sensor de demo calibrado': 'Demo sensor calibrated',
+      }
+      return map[title] || title
+    }
+  }
+
+  function getEventDetail(detail: string) {
+    if (lang === 'es') {
+      const map: Record<string, string> = {
+        'Gas level dropped below 50 ppm': 'El nivel de gas cayó por debajo de 50 ppm',
+        'Fan speed set to 45%': 'Velocidad del ventilador al 45%',
+        '128 ppm · Ventilation activated': '128 ppm · Ventilación activada',
+        '612 ppm · Safety test started': '612 ppm · Prueba de seguridad iniciada',
+        'Kitchen · Control manual': 'Cocina · Control manual',
+        'Living room · Control manual': 'Sala · Control manual',
+        'Garage · Control manual': 'Garaje · Control manual',
+        'Kitchen · Manual control': 'Cocina · Control manual',
+        'Living room · Manual control': 'Sala · Control manual',
+        'Garage · Manual control': 'Garaje · Control manual',
+        'Calibración completada con éxito': 'Calibración completada con éxito',
+        'Calibration completed successfully': 'Calibración completada con éxito',
+      }
+      return (
+        map[detail] ||
+        detail
+          .replace(' · Manual control', ' · Control manual')
+          .replace('Kitchen', 'Cocina')
+          .replace('Living room', 'Sala')
+          .replace('Garage', 'Garaje')
+      )
+    } else {
+      const map: Record<string, string> = {
+        'El nivel de gas cayó por debajo de 50 ppm': 'Gas level dropped below 50 ppm',
+        'Velocidad del ventilador al 45%': 'Fan speed set to 45%',
+        'Velocidad del ventilador establecida al 45%': 'Fan speed set to 45%',
+        '128 ppm · Ventilación activada': '128 ppm · Ventilation activated',
+        '612 ppm · Prueba de seguridad iniciada': '612 ppm · Safety test started',
+        'Cocina · Control manual': 'Kitchen · Manual control',
+        'Sala · Control manual': 'Living room · Manual control',
+        'Garaje · Control manual': 'Garage · Manual control',
+        'Calibración completada con éxito': 'Calibration completed successfully',
+      }
+      return (
+        map[detail] ||
+        detail
+          .replace(' · Control manual', ' · Manual control')
+          .replace('Cocina', 'Kitchen')
+          .replace('Sala', 'Living room')
+          .replace('Garaje', 'Garage')
+      )
+    }
+  }
+
   const deviceSection = (
     <section className="panel devices-panel">
       <div className="section-heading">
@@ -405,22 +563,31 @@ function App({ displayName }: { displayName: string }) {
           <span />
         </div>
         {devices.map((d, i) => (
+          // 🔧 Guardamos el nombre en inglés (clave estable) y traducimos al renderizar
           <button className="device-row" key={d.model} onClick={() => setModal(d.name)}>
             <span className="device-info">
               <span className={`device-icon ${i === 1 ? 'mint-icon' : ''}`}>
                 <Icon name={d.icon} />
               </span>
               <span>
-                <strong>{d.name}</strong>
+                <strong>{getDeviceName(d.name)}</strong>
                 <small>{d.model}</small>
               </span>
             </span>
             <span className="reading">
-              {i === 0 ? `${gas} ppm` : i === 1 ? `${running ? speed : 0}% speed` : d.value}
+              {i === 0
+                ? `${gas} ppm`
+                : i === 1
+                  ? running
+                    ? `${speed}% ${lang === 'es' ? 'velocidad' : 'speed'}`
+                    : lang === 'es'
+                      ? '0% velocidad'
+                      : '0% speed'
+                  : d.value}
             </span>
             <span className={`device-status ${i === 1 && !running ? 'idle' : ''}`}>
               <i />
-              {i === 1 ? (running ? t.running : t.standby) : d.status}
+              {i === 1 ? (running ? t.running : t.standby) : getDeviceStatus(d.status)}
             </span>
             <Icon name="chevron" size={16} />
           </button>
@@ -429,7 +596,7 @@ function App({ displayName }: { displayName: string }) {
       <div className="device-foot">
         <Icon name="wifi" size={14} />
         <span>
-          Connected to <strong>Home_Network</strong>
+          {lang === 'es' ? 'Conectado a ' : 'Connected to '}<strong>Home_Network</strong>
         </span>
         <span className="signal">
           −58 dBm <span className="signal-bars">▂▄▆</span>
@@ -458,9 +625,10 @@ function App({ displayName }: { displayName: string }) {
               <Icon name={event.type} size={17} />
             </span>
             <div>
-              <strong>{event.title}</strong>
-              <p>{event.detail}</p>
-              <small>{event.time}</small>
+              <strong>{getEventTitle(event.title)}</strong>
+              <p>{getEventDetail(event.detail)}</p>
+              {/* 🔧 Traducimos la hora relativa según el idioma activo */}
+              <small>{getEventTime(event.time)}</small>
             </div>
           </div>
         ))}
@@ -599,7 +767,8 @@ function App({ displayName }: { displayName: string }) {
                     name={r === 'Kitchen' ? 'home' : r === 'Living room' ? 'grid' : 'devices'}
                     size={15}
                   />
-                  {r === 'Kitchen' ? (lang === 'es' ? 'Cocina' : 'Kitchen') : r === 'Living room' ? (lang === 'es' ? 'Sala' : 'Living room') : (lang === 'es' ? 'Garaje' : 'Garage')}
+                  {/* 🔧 Reutilizamos getRoomLabel */}
+                  {getRoomLabel(r)}
                   {room === r && <i className="status-dot" />}
                 </button>
               ))}
@@ -943,7 +1112,8 @@ function App({ displayName }: { displayName: string }) {
                 size={26}
               />
             </span>
-            <h2 id="dialog-title">{modal}</h2>
+            {/* 🔧 Título del modal traducido dinámicamente */}
+            <h2 id="dialog-title">{getModalTitle(modal)}</h2>
             {modal === 'Add device' ? (
               <form
                 onSubmit={(e) => {
@@ -1052,11 +1222,16 @@ function App({ displayName }: { displayName: string }) {
               </div>
             ) : (
               <>
-                <p>{lang === 'es' ? `Dispositivo de demo conectado en ${room}.` : `Connected demo device in ${room}.`}</p>
+                {/* 🔧 modal ahora contiene el nombre en inglés (clave estable) */}
+                <p>
+                  {lang === 'es'
+                    ? `Dispositivo de demo conectado en ${getRoomLabel(room)}.`
+                    : `Connected demo device in ${getRoomLabel(room)}.`}
+                </p>
                 <div className="detail-list">
                   <div>
                     <span>{t.status}</span>
-                    <strong className="green-text">Online</strong>
+                    <strong className="green-text">{getDeviceStatus('Online')}</strong>
                   </div>
                   <div>
                     <span>{lang === 'es' ? 'Red' : 'Network'}</span>
@@ -1076,7 +1251,7 @@ function App({ displayName }: { displayName: string }) {
                       {modal === 'Gas sensor'
                         ? `${gas} ppm`
                         : modal === 'Ventilation fan'
-                          ? `${running ? speed : 0}% speed`
+                          ? `${running ? speed : 0}% ${lang === 'es' ? 'velocidad' : 'speed'}`
                           : modal === 'Climate sensor'
                             ? '24.6 °C'
                             : '32 ppm'}
